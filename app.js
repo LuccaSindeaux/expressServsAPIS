@@ -4,21 +4,32 @@ const app = express()
 
 const port = 3000
 
-app.get('/', (req, res) => {
- res.send('Hello World!')
-})
+app.use(express.json()); 
+
+let listaProdutos = [
+    { id: 1, nome: "Arroz", preco: 3.20 },
+    { id: 2, nome: "Feijao", preco: 7.50 },
+    { id: 3, nome: "Coca cola", preco: 9.90 }
+   ];
 
 app.get('/produtos', (req, res)=> {
-    res.send("Listar Produtos");
-})
+    res.json(listaProdutos);
+   })
 
 app.post('/produtos', (req, res)=> {
-res.send("Inserir Produto");
-})
+    let produto = req.body;
+    produto.id = 4;
+    listaProdutos.push(produto);
+    res.status(201).json(produto);
+   })
+   
 
-app.get('/produtos/:id', (req, res)=> {
-const id = req.params.id;
-res.send("Buscar Produto com id: "+id);
+app.get('/produtos/:id', (req, res)=> { 
+    const id = +req.params.id;
+    const produto = listaProdutos.find(
+    prod => prod.id == id
+);
+    res.json(produto);
 })
 
 app.put('/produtos/:id', (req, res)=> {
